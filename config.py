@@ -1,6 +1,8 @@
 # SmartLivingCircle Marketing Config
 # All secrets via environment variables only - DO NOT hardcode secrets here
 
+import os
+
 PAYPAL_EMAIL = "smartlivingcircle@gmail.com"
 PAYHIP_LINK = "https://payhip.com/b/1vtcL"
 PRODUCT_NAME = "Blockchain Technologies: How to Make Money with Flash Loans"
@@ -18,6 +20,9 @@ PRODUCT_NAME = "Blockchain Technologies: How to Make Money with Flash Loans"
 DISCORD_WEBHOOKS = [
     "https://discord.com/api/webhooks/1510211779924463748/kg-TcdfPw5e-dqCF7-9MuN6xZlReHsWZjoXKNwXn8UjChG7BBx3jvpEOBtoKPL6UHngC",
 ]
+
+# Permanent Discord invite link
+DISCORD_INVITE = "https://discord.gg/YSc6tUuSaD"
 
 # Telegram bot token and targets
 # Get bot token from @BotFather on Telegram
