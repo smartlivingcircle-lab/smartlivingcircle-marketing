@@ -366,7 +366,7 @@ PayPal: smartlivingcircle@gmail.com
 ## SOCIAL
 Instagram: @smartlivingcircle
 TikTok: (new account, 0 followers)
-Discord Server: https://discord.gg/VWfXctU3
+Discord Server: https://discord.gg/YSc6tUuSaD
 """
     return secrets
 
