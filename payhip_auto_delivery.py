@@ -22,7 +22,7 @@ sys.path.insert(0, WORKDIR)
 
 # Email credentials
 GMAIL_USER = "smartlivingcircle@gmail.com"
-GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', '')  # Need 2FA app password
+GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', 'miaq pbjj oifv azmo')
 
 # Payhip product info
 PAYPAL_EMAIL = "smartlivingcircle@gmail.com"
@@ -30,7 +30,7 @@ PAYHIP_LINK = "https://payhip.com/b/1vtcL"
 PRODUCT_NAME = "Blockchain Technologies: How to Make Money with Flash Loans"
 
 # Path to the PDF (need to download/upload it first)
-PDF_PATH = os.path.join(WORKDIR, "blockchain_technologies_flash_loans.pdf")
+PDF_PATH = os.path.join(WORKDIR, "Blockchain_Technologies_Flashloan_Guide.pdf")
 
 # ============================================================
 # EMAIL FUNCTIONS
@@ -103,9 +103,8 @@ def check_payhip_orders():
         mail.login(GMAIL_USER, GMAIL_APP_PASSWORD)
         mail.select("inbox")
         
-        # Search for Payhip emails (last 7 days)
-        since_date = (datetime.now() - timedelta(days=7)).strftime("%d-%b-%Y")
-        status, messages = mail.search(None, f'SINCE {since_date} FROM "payhip.com" OR SUBJECT "order" OR SUBJECT "thank you for your purchase"')
+        # Search for Payhip order emails - use simple query (Gmail doesn't support complex OR)
+        status, messages = mail.search(None, 'FROM "payhip.com"')
         
         if status != "OK":
             print("No messages found")
