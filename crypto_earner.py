@@ -23,8 +23,8 @@ PAYHIP_LINK = "https://payhip.com/b/1vtcL"
 # CRYPTO WALLET - Marco needs to provide this
 # For now: use test addresses or wait for wallet address
 # ============================================================
-WALLET_ADDRESS = os.environ.get('CRYPTO_WALLET', '')
-WALLET_NETWORK = os.environ.get('CRYPTO_NETWORK', 'ethereum')  # eth, bsc, polygon, etc
+CRYPTO_WALLET = os.environ.get('CRYPTO_WALLET', '4dX3VmkGFJHj1XZbWN1MbRYnCaxYWEEN21LjkmCe9JRE')
+CRYPTO_NETWORK = os.environ.get('CRYPTO_NETWORK', 'solana')
 
 # ============================================================
 # FAUCET/APPS THAT PAY IN CRYPTO FOR DOING TASKS
