@@ -2,27 +2,27 @@
 """
 Telegram Marketing Bot
 Posts DeFi content to Telegram groups/channels
-Uses python-telegram-bot v20+ (async)
+Uses direct HTTP API calls (sync)
 """
 
 import os
 import sys
 import json
 import random
-import asyncio
+import requests
 from datetime import datetime
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import PAYHIP_LINK, PRODUCT_NAME
 
-BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '8889649869:AAFD9DiTckmtHn3lBqzAPmyjP7__aLYyR9o')
+BOT_TOKEN=os.environ.get('TELEGRAM_BOT_TOKEN', '8889649869:***')
 TARGETS = []  # Add chat IDs here: [-1001234567890] or [123456789]
 
 # Content library - rotating DeFi/crypto posts
 POSTS = [
     {
         "title": "🔓 What is a Flash Loan?",
-        "body": "A flash loan lets you borrow ANY amount without collateral - as long as you return it in the SAME transaction.\n\nNo collateral. No KYC. Just pure DeFi logic.\n\nBook I read to understand this: {link}",
+        "body": "A flash loan lets you borrow ANY amount without collateral - as long as you return it in the SAME transaction.\n\nNo collateral. No KYC. Just pure DeFi logic.\n\nBook: {link}",
         "emoji": "💰",
         "hashtags": "#DeFi #FlashLoan #Crypto #Blockchain"
     },
@@ -63,19 +63,22 @@ def get_post():
     text = f"{post['emoji']} *{post['title']}*\n\n{post['body'].format(link=PAYHIP_LINK)}\n\n{post['hashtags']}"
     return text
 
-async def send_telegram_message(chat_id, text):
-    """Send a message to a Telegram chat"""
+def send_telegram_message(chat_id, text):
+    """Send a message to a Telegram chat via direct API"""
     try:
-        from telegram import Bot
-        bot = Bot(token=BOT_TOKEN)
-        await bot.send_message(chat_id=chat_id, text=text, parse_mode='Markdown')
-        print(f"  Sent to {chat_id}")
-        return True
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        r = requests.post(url, json={"chat_id": chat_id, "text": text, "parse_mode": "Markdown"}, timeout=10)
+        if r.json().get('ok'):
+            print(f"  Sent to {chat_id}")
+            return True
+        else:
+            print(f"  Error to {chat_id}: {r.json().get('description')}")
+            return False
     except Exception as e:
-        print(f"  Error to {chat_id}: {e}")
+        print(f"  Exception to {chat_id}: {e}")
         return False
 
-async def run_telegram_campaign():
+def run_telegram_campaign():
     """Main campaign runner"""
     print("=" * 50)
     print("Telegram Marketing Campaign")
@@ -87,8 +90,8 @@ async def run_telegram_campaign():
     
     if not TARGETS:
         print("No Telegram targets configured - skipping")
-        print("Add chat IDs to TELEGRAM_TARGETS in config.py")
-        print("Note: Bot must be admin/member of the channel/group")
+        print("Add chat IDs to TARGETS in telegram_poster.py")
+        print("Bot must be admin/member of the channel/group")
         return
     
     post_text = get_post()
@@ -96,17 +99,10 @@ async def run_telegram_campaign():
     
     success = 0
     for target in TARGETS:
-        if await send_telegram_message(target, post_text):
+        if send_telegram_message(target, post_text):
             success += 1
     
     print(f"\nSent to {success}/{len(TARGETS)} Telegram chats")
 
-def run_telegram_campaign_sync():
-    """Sync wrapper"""
-    try:
-        asyncio.run(run_telegram_campaign())
-    except KeyboardInterrupt:
-        print("\nInterrupted")
-
 if __name__ == "__main__":
-    run_telegram_campaign_sync()
+    run_telegram_campaign()
