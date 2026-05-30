@@ -21,7 +21,7 @@ DISCORD_WEBHOOKS = [
 
 # Telegram bot token and targets
 # Get bot token from @BotFather on Telegram
-TELEGRAM_BOT_TOKEN = ""
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '8889649869:AAFD9DiTckmtHn3lBqzAPmyjP7__aLYyR9o')
 TELEGRAM_TARGETS = []
 
 # Posting schedule (cron format)
