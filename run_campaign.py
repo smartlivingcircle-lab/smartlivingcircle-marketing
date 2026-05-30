@@ -17,6 +17,10 @@ def log(msg):
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {msg}")
 
 def run_reddit():
+    client_id = os.environ.get('REDDIT_CLIENT_ID', '')
+    if not client_id:
+        log("Reddit: No credentials (network blocked) - skipping")
+        return
     log("Starting Reddit campaign...")
     try:
         from reddit_poster import run_reddit_campaign
@@ -37,8 +41,8 @@ def run_discord():
 def run_telegram():
     log("Starting Telegram campaign...")
     try:
-        from telegram_poster import run_telegram_campaign
-        run_telegram_campaign()
+        from telegram_poster import run_telegram_campaign_sync
+        run_telegram_campaign_sync()
         log("Telegram campaign done")
     except Exception as e:
         log(f"Telegram error: {e}")
