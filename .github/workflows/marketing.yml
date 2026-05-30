@@ -1,0 +1,74 @@
+name: SmartLivingCircle Marketing Engine
+
+on:
+  schedule:
+    # Every 4 hours
+    - cron: '0 */4 * * *'
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  marketing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          pip install praw python-telegram-bot requests schedule
+          
+      - name: Set environment secrets
+        run: |
+          # Reddit
+          echo "REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REDDIT_USERNAME=${{ secrets.REDDIT_USERNAME }}" >> $GITHUB_ENV
+          echo "REDDIT_PASSWORD=${{ secrets.REDDIT_PASSWORD }}" >> $GITHUB_ENV
+          
+          # Telegram
+          echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> $GITHUB_ENV
+          
+          # Email
+          echo "GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }}" >> $GITHUB_ENV
+          
+          # Crypto wallet
+          echo "CRYPTO_WALLET=${{ secrets.CRYPTO_WALLET }}" >> $GITHUB_ENV
+          
+      - name: Run Reddit Campaign
+        run: python run_campaign.py reddit
+        
+      - name: Run Telegram Campaign
+        run: python run_campaign.py telegram
+        
+      - name: Run Crypto Earning Campaign
+        run: python crypto_earner.py
+        
+      - name: Auto-deliver Payhip orders
+        run: python payhip_auto_delivery.py
+
+  # Run every 6 hours for Reddit (more spaced out)
+  reddit-campaign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install praw requests
+      - name: Set Reddit secrets
+        run: |
+          echo "REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "REDDIT_USERNAME=${{ secrets.REDDIT_USERNAME }}" >> $GITHUB_ENV
+          echo "REDDIT_PASSWORD=${{ secrets.REDDIT_PASSWORD }}" >> $GITHUB_ENV
+      - run: python run_campaign.py reddit
