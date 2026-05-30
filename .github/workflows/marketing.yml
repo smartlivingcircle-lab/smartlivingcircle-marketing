@@ -9,7 +9,7 @@ jobs:
   marketing:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -21,19 +21,22 @@ jobs:
       - name: Install dependencies
         run: pip install requests PyJWT cryptography
 
-      - name: Set environment secrets
+      - name: Run Binance Monitor
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CRYPTO_WALLET: ${{ secrets.CRYPTO_WALLET }}
           BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
           BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-
-      - name: Run Binance Monitor
         run: python binance_monitor.py
         continue-on-error: true
 
       - name: Run Traffic Growth Engine
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CRYPTO_WALLET: ${{ secrets.CRYPTO_WALLET }}
+          BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
+          BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
         run: python traffic_growth.py
         continue-on-error: true
 
@@ -50,5 +53,7 @@ jobs:
         continue-on-error: true
 
       - name: Auto-deliver Payhip orders
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python payhip_auto_delivery.py
         continue-on-error: true
